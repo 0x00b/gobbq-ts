@@ -7,3 +7,5 @@ npm install ws
 npm i --save-dev @types/ws
 
 npm install protobufjs
+
+npm install typescript -D
