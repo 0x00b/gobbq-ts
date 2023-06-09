@@ -10,7 +10,7 @@ import {
 import type { Endpoint } from '../endpoint';
 import { createTruncator } from './truncator';
 import { Packet } from '../codec/packet';
-import { KCP } from './node-kcp-ex/kcpclient';
+import { KCP } from '../../node-kcp-ex/kcpclient';
 
 const block = undefined
 

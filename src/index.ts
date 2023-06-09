@@ -11,12 +11,13 @@
  */
 
 import { Client } from './client';
+import { Context } from './dispatcher/context';
 
 /**
  * 内置全局 Client 实例
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention 
-export { Client };
+export { Client , Context};
 export { ERROR } from './error';
 
 // namespace

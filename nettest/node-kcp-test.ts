@@ -1,5 +1,5 @@
 
-import { KCP } from "../src/transport/node-kcp-ex/kcpclient";
+import { KCP } from "../node-kcp-ex/kcpclient";
 
 
  
