@@ -257,6 +257,11 @@ class Context {
       return;
     }
 
+    // no response
+    if (this.methodDef.responseType == undefined) {
+      return
+    }
+
     let respHdr = Header.create({ ...this.pkt?.Header })
     respHdr.RequestType = RequestType.RequestRespone
     respHdr.DstEntity = this.pkt?.Header.SrcEntity

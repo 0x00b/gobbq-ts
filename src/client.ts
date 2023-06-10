@@ -46,7 +46,7 @@ export class Client<CustomOptions extends Options> {
   // private transport: ClientTransport;
 
   /** 未收到回包的 unary  */
-  private deferredUnary = new Map<string, Deferred<UnaryResult, RpcError>>();
+  private deferredUnary = new Map<string, Deferred<Partial<UnaryResult>, RpcError>>();
 
   private constructor(
     def: ServiceDefinition, impl: any,
@@ -145,7 +145,6 @@ export class Client<CustomOptions extends Options> {
     const mergedOptions = {
       ...this.options,
       retry: false,
-      callType: 0 as const,
       ...opt,
     };
 
@@ -198,9 +197,8 @@ export class Client<CustomOptions extends Options> {
 
         try {
           rpc.startTime = process.uptime();
-          // const { response, local } = await transport.addUnary(message);
-          // console.log("req:", message)
-          const { response, local } = await this.addUnary(message);
+          // console.log("req:", message) 
+          const { response, local } = await this.addUnary(message, mergedOptions);
           // console.log("22rsp:", response)
           rpc.endTime = process.uptime();
           rpc.respond(response, local);
@@ -347,7 +345,7 @@ export class Client<CustomOptions extends Options> {
    * - 发送过程中发生异常时，Promise 抛出一个 RpcError
    * @param req 请求 Message
    */
-  public async addUnary(req: UnaryRequestMessage): Promise<UnaryResult> {
+  public async addUnary(req: UnaryRequestMessage, options: Partial<Options>): Promise<Partial<UnaryResult>> {
     // console.log('[sys] unary req', JSON.stringify(req));
 
     let buf: Buffer;
@@ -357,7 +355,7 @@ export class Client<CustomOptions extends Options> {
       throw new RpcError(ERROR.CLIENT_ENCODE_ERR, "error.message, error");
     }
 
-    const deferred = new Deferred<UnaryResult, RpcError>();
+    const deferred = new Deferred<Partial<UnaryResult>, RpcError>();
     this.deferredUnary.set(req.Header.RequestId, deferred);
 
     // console.log(req.Header)
@@ -372,6 +370,11 @@ export class Client<CustomOptions extends Options> {
       try {
         // console.log("send:", buf)
         this.transport.send(buf);
+
+        if (!options.hasResponse) {
+          this.deferredUnary.delete(req.Header.RequestId);
+          deferred.resolve({})
+        }
       } catch (error) {
         this.deferredUnary.delete(req.Header.RequestId);
         deferred.reject(new RpcError(ERROR.CLIENT_NETWORK_ERR, "error.message, error"));

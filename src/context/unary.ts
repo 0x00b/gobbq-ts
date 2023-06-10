@@ -8,7 +8,7 @@ import type { Options } from './base';
 import type { Endpoint } from '../endpoint';
 
 
-export type UnaryResponse<ResponseType> = Promise<{error: ERROR, response: ResponseType}>
+export type UnaryResponse<ResponseType> = Promise<{ error: ERROR, response: ResponseType }>
 
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -45,10 +45,15 @@ export class UnaryContext<CustomOptions extends UnaryOptions> extends BaseContex
   /**
    * 处理 Unary 响应
    */
-  public respond(res: UnaryResponsePacket, local: Endpoint) {
+  public respond(res: UnaryResponsePacket | undefined, local: Endpoint | undefined) {
     console.log('[respond]', res, local);
-    if (!this.pending) return;
+    if (!this.pending) { return };
+    if (!this.options.hasResponse) { return }
+
     strictEqual<undefined>(this.response, undefined);
+    if (!res) {
+      throw "unexpected res"
+    }
 
     this.local = local;
     this.response = res;

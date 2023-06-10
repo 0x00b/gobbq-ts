@@ -67,7 +67,7 @@ export function decode(tempBuff: Buffer): Packet | null {
 
 
   if (packetDataSize + 4 > tempBuff.length) {
-    console.log(`err2 ${packetDataSize} > ${packetDataSize + 4}`)
+    console.log(`err2 ${packetDataSize + 4} > ${tempBuff.length}`)
     return null
   }
 

@@ -47,6 +47,9 @@ export interface Options {
    * 中间件链路耗时上报开关
    */
   needTraceCost: boolean;
+
+  // 是否需要回包
+  hasResponse: boolean
   
   clientMiddlewares: Middleware[],
   dispatherMiddlewares: ds.Middleware<any>[],

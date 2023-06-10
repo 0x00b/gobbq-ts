@@ -52,9 +52,11 @@ export function makeClientConstructor(
 
       let resp = new Deferred<any, ERROR>()
 
-      const rpc = client.unaryInvoke(hdr, data)
+      let hasResponse = attrs.responseType != undefined
 
-      if (attrs.responseDeserialize === undefined) {
+      const rpc = client.unaryInvoke(hdr, data, { hasResponse })
+
+      if (!hasResponse) {
         // is one way call
         resp.resolve(0)
       } else {
