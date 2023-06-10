@@ -36,11 +36,11 @@ export function createTruncator(handler: PacketHandler): Truncator {
       }
 
       // 不足一个 packet
-      if (buf.length + 4 < packetLength) {
+      if (packetLength + 4 > buf.length) {
         break;
       }
 
-      // console.log("recv packetLength:", packetLength)
+      console.log("recv:", packetLength, buf.length)
 
       handler(buf.subarray(0, packetLength + 4));
 
