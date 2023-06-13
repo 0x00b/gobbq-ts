@@ -5,16 +5,18 @@
 import { UnaryResponse } from "../../src/context/unary";
 import { Client } from "../../src";
 import { makeClientConstructor } from "../../src/bbq/bbq";
-import { EntityID,ServiceType } from "../../proto/bbq";
+import { ServiceType } from "../../proto/bbq";
 import { SayHelloRequest } from "./exam"
 import { SayHelloResponse } from "./exam"
+import Long from "long";
 	
 // EchoService
 export type EchoServiceDefinition = typeof EchoServiceDefinition;
 export const EchoServiceDefinition = {
   typeName: "exampb.EchoService",
   serviceType: ServiceType.Service, 
-  methods: {SayHello: {
+  methods: {
+    SayHello: {
       methodName: "SayHello",
       requestType: SayHelloRequest,
       responseType: SayHelloResponse,
@@ -48,7 +50,8 @@ export type EchoEtyEntityDefinition = typeof EchoEtyEntityDefinition;
 export const EchoEtyEntityDefinition = {
   typeName: "exampb.EchoEtyEntity",
   serviceType: ServiceType.Entity, 
-  methods: {SayHello: {
+  methods: {
+    SayHello: {
       methodName: "SayHello",
       requestType: SayHelloRequest,
       responseType: SayHelloResponse,
@@ -74,7 +77,7 @@ export interface EchoEtyEntity {
 	SayHello(request: SayHelloRequest):UnaryResponse<SayHelloResponse>
 }
 
-export function NewEchoEtyEntity(client: Client<any>, entityID: EntityID): EchoEtyEntity {
+export function NewEchoEtyEntity(client: Client<any>, entityID: Long): EchoEtyEntity {
   return makeClientConstructor(client, EchoEtyEntityDefinition, entityID) as unknown as EchoEtyEntity
 }
 
@@ -84,7 +87,8 @@ export type EchoSvc2ServiceDefinition = typeof EchoSvc2ServiceDefinition;
 export const EchoSvc2ServiceDefinition = {
   typeName: "exampb.EchoSvc2Service",
   serviceType: ServiceType.Service, 
-  methods: {SayHello: {
+  methods: {
+    SayHello: {
       methodName: "SayHello",
       requestType: SayHelloRequest,
       responseType: SayHelloResponse,
@@ -118,7 +122,8 @@ export type ClientEntityDefinition = typeof ClientEntityDefinition;
 export const ClientEntityDefinition = {
   typeName: "exampb.ClientEntity",
   serviceType: ServiceType.Entity, 
-  methods: {SayHello: {
+  methods: {
+    SayHello: {
       methodName: "SayHello",
       requestType: SayHelloRequest,
       responseType: SayHelloResponse,
@@ -144,7 +149,7 @@ export interface ClientEntity {
 	SayHello(request: SayHelloRequest):UnaryResponse<SayHelloResponse>
 }
 
-export function NewClientEntity(client: Client<any>, entityID: EntityID): ClientEntity {
+export function NewClientEntity(client: Client<any>, entityID: Long): ClientEntity {
   return makeClientConstructor(client, ClientEntityDefinition, entityID) as unknown as ClientEntity
 }
 // NoRespEntity 客户端
@@ -152,7 +157,8 @@ export type NoRespEntityDefinition = typeof NoRespEntityDefinition;
 export const NoRespEntityDefinition = {
   typeName: "exampb.NoRespEntity",
   serviceType: ServiceType.Entity, 
-  methods: {SayHello: {
+  methods: {
+    SayHello: {
       methodName: "SayHello",
       requestType: SayHelloRequest,
       responseType: undefined,
@@ -178,7 +184,7 @@ export interface NoRespEntity {
 	SayHello(request: SayHelloRequest):void
 }
 
-export function NewNoRespEntity(client: Client<any>, entityID: EntityID): NoRespEntity {
+export function NewNoRespEntity(client: Client<any>, entityID: Long): NoRespEntity {
   return makeClientConstructor(client, NoRespEntityDefinition, entityID) as unknown as NoRespEntity
 }
 

@@ -10,8 +10,8 @@ import { Dispatcher } from './dispatcher/dispatcher';
 import { ClientTransport, createTransport, UnaryResult } from './transport';
 import { Deferred, noop } from './utils';
 import { ERROR, RpcError } from './error';
-
-import { EntityID, Header, RequestType } from '../proto/bbq';
+import Long from "long";
+import { Header, RequestType } from '../proto/bbq';
 import { encode, UnaryRequestMessage } from './codec/msg';
 import { Endpoint, getEndpointName } from './endpoint';
 import { Packet } from './codec/packet';
@@ -32,7 +32,7 @@ export type InitializeOptions = Pick<Options, 'timeout'> & Partial<Pick<Options,
  */
 export class Client<CustomOptions extends Options> {
 
-  public EntityID: EntityID
+  public EntityID: Long
 
   private readonly options: InitializeOptions;
   /** endpoint name -> transport */
@@ -52,7 +52,7 @@ export class Client<CustomOptions extends Options> {
     def: ServiceDefinition, impl: any,
     options: Partial<Options> = Object.create(null),
   ) {
-    this.EntityID = EntityID.create({ ID: randomUUID(), Type: def.typeName })
+    this.EntityID = Long.fromInt(0) //EntityID.create({ ID: randomUUID(), Type: def.typeName })
 
     this.dispather = new Dispatcher(def, impl)
     options.dispatherMiddlewares?.forEach(m => {
@@ -98,8 +98,7 @@ export class Client<CustomOptions extends Options> {
     }
     console.log("gate:", response)
 
-    client.EntityID.ProxyID = response.EntityID.ProxyID
-    client.EntityID.InstID = response.EntityID.ID
+    client.EntityID = response.EntityID
 
     return client
   }

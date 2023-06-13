@@ -1,13 +1,13 @@
 /* eslint-disable */
-import * as _m0 from "protobufjs/minimal";
-import { EntityID } from "../../proto/bbq";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { Empty } from "./google/protobuf/empty";
 
 export const protobufPackage = "exampb";
 
 export interface SayHelloRequest {
   text: string;
-  CLientID: EntityID | undefined;
+  CLientID: Long;
 }
 
 export interface SayHelloResponse {
@@ -15,7 +15,7 @@ export interface SayHelloResponse {
 }
 
 function createBaseSayHelloRequest(): SayHelloRequest {
-  return { text: "", CLientID: undefined };
+  return { text: "", CLientID: Long.UZERO };
 }
 
 export const SayHelloRequest = {
@@ -23,8 +23,8 @@ export const SayHelloRequest = {
     if (message.text !== "") {
       writer.uint32(10).string(message.text);
     }
-    if (message.CLientID !== undefined) {
-      EntityID.encode(message.CLientID, writer.uint32(18).fork()).ldelim();
+    if (!message.CLientID.isZero()) {
+      writer.uint32(16).uint64(message.CLientID);
     }
     return writer;
   },
@@ -40,7 +40,7 @@ export const SayHelloRequest = {
           message.text = reader.string();
           break;
         case 2:
-          message.CLientID = EntityID.decode(reader, reader.uint32());
+          message.CLientID = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -53,14 +53,14 @@ export const SayHelloRequest = {
   fromJSON(object: any): SayHelloRequest {
     return {
       text: isSet(object.text) ? String(object.text) : "",
-      CLientID: isSet(object.CLientID) ? EntityID.fromJSON(object.CLientID) : undefined,
+      CLientID: isSet(object.CLientID) ? Long.fromValue(object.CLientID) : Long.UZERO,
     };
   },
 
   toJSON(message: SayHelloRequest): unknown {
     const obj: any = {};
     message.text !== undefined && (obj.text = message.text);
-    message.CLientID !== undefined && (obj.CLientID = message.CLientID ? EntityID.toJSON(message.CLientID) : undefined);
+    message.CLientID !== undefined && (obj.CLientID = (message.CLientID || Long.UZERO).toString());
     return obj;
   },
 
@@ -72,8 +72,8 @@ export const SayHelloRequest = {
     const message = createBaseSayHelloRequest();
     message.text = object.text ?? "";
     message.CLientID = (object.CLientID !== undefined && object.CLientID !== null)
-      ? EntityID.fromPartial(object.CLientID)
-      : undefined;
+      ? Long.fromValue(object.CLientID)
+      : Long.UZERO;
     return message;
   },
 };
@@ -129,35 +129,101 @@ export const SayHelloResponse = {
   },
 };
 
-export interface Echo {
-  SayHello(request: SayHelloRequest): Promise<SayHelloResponse>;
-}
+export type EchoDefinition = typeof EchoDefinition;
+export const EchoDefinition = {
+  name: "Echo",
+  fullName: "exampb.Echo",
+  methods: {
+    sayHello: {
+      name: "SayHello",
+      requestType: SayHelloRequest,
+      requestStream: false,
+      responseType: SayHelloResponse,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
 
-export interface EchoEty {
-  SayHello(request: SayHelloRequest): Promise<SayHelloResponse>;
-}
+export type EchoEtyDefinition = typeof EchoEtyDefinition;
+export const EchoEtyDefinition = {
+  name: "EchoEty",
+  fullName: "exampb.EchoEty",
+  methods: {
+    sayHello: {
+      name: "SayHello",
+      requestType: SayHelloRequest,
+      requestStream: false,
+      responseType: SayHelloResponse,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
 
-export interface EchoSvc2 {
-  SayHello(request: SayHelloRequest): Promise<SayHelloResponse>;
-}
+export type EchoSvc2Definition = typeof EchoSvc2Definition;
+export const EchoSvc2Definition = {
+  name: "EchoSvc2",
+  fullName: "exampb.EchoSvc2",
+  methods: {
+    sayHello: {
+      name: "SayHello",
+      requestType: SayHelloRequest,
+      requestStream: false,
+      responseType: SayHelloResponse,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
 
 /** 客户端 */
-export interface Client {
-  SayHello(request: SayHelloRequest): Promise<SayHelloResponse>;
-}
+export type ClientDefinition = typeof ClientDefinition;
+export const ClientDefinition = {
+  name: "Client",
+  fullName: "exampb.Client",
+  methods: {
+    sayHello: {
+      name: "SayHello",
+      requestType: SayHelloRequest,
+      requestStream: false,
+      responseType: SayHelloResponse,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
 
 /** 客户端 */
-export interface NoResp {
-  SayHello(request: SayHelloRequest): Promise<Empty>;
-}
+export type NoRespDefinition = typeof NoRespDefinition;
+export const NoRespDefinition = {
+  name: "NoResp",
+  fullName: "exampb.NoResp",
+  methods: {
+    sayHello: {
+      name: "SayHello",
+      requestType: SayHelloRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends { $case: string } ? { [K in keyof Omit<T, "$case">]?: DeepPartial<T[K]> } & { $case: T["$case"] }
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

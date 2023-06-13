@@ -1,15 +1,16 @@
 import { randomUUID } from "crypto";
-import { EntityID, Header, RequestType, ServiceType } from "../../proto/bbq";
+import { Header, RequestType, ServiceType } from "../../proto/bbq";
 import { Client } from "../client";
 import { UnaryContext } from "../context";
 import { ServiceDefinition } from "../dispatcher/service";
 import { ERROR } from "../error";
 import { Deferred } from "../utils";
+import Long from "long";
 
 export function makeClientConstructor(
   client: Client<any>,
   service: ServiceDefinition,
-  entityID?: EntityID
+  entityID?: Long
 ) {
 
   if (!client) {
@@ -35,11 +36,9 @@ export function makeClientConstructor(
 
       if (entityID) {
         hdr.DstEntity = entityID
-      } else {
-        hdr.DstEntity = EntityID.create()
-        hdr.DstEntity.Type = service.typeName
       }
 
+      hdr.Type = service.typeName
       hdr.ServiceType = service.serviceType;
       hdr.Method = attrs.methodName
       hdr.RequestType = RequestType.RequestRequest;

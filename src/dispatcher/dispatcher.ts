@@ -70,7 +70,7 @@ export class Dispatcher<CustomContextT = {}> {
 
   public onUnaryMessage(pkt: Packet, transport: ClientTransport) {
 
-    let methodName = pkt.Header.DstEntity?.Type + "/" + pkt.Header.Method
+    let methodName = pkt.Header?.Type + "/" + pkt.Header.Method
 
     let handler = this.handlers.get(methodName)
 

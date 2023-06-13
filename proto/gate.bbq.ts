@@ -5,7 +5,7 @@
 import { UnaryResponse } from "../src/context/unary";
 import { Client } from "../src";
 import { makeClientConstructor } from "../src/bbq/bbq";
-import { EntityID,ServiceType } from "./bbq";
+import { ServiceType } from "../proto/bbq";
 import { PingPong } from "./gate"
 import { RegisterClientRequest } from "./gate"
 import { RegisterClientResponse } from "./gate"
@@ -15,7 +15,8 @@ export type GateServiceDefinition = typeof GateServiceDefinition;
 export const GateServiceDefinition = {
   typeName: "gatepb.GateService",
   serviceType: ServiceType.Service, 
-  methods: {RegisterClient: {
+  methods: {
+    RegisterClient: {
       methodName: "RegisterClient",
       requestType: RegisterClientRequest,
       responseType: RegisterClientResponse,
@@ -32,7 +33,8 @@ export const GateServiceDefinition = {
         return RegisterClientResponse.decode(input)
       },
     },
-	UnregisterClient: {
+	
+    UnregisterClient: {
       methodName: "UnregisterClient",
       requestType: RegisterClientRequest,
       responseType: undefined,
@@ -49,7 +51,8 @@ export const GateServiceDefinition = {
         
       },
     },
-	Ping: {
+	
+    Ping: {
       methodName: "Ping",
       requestType: PingPong,
       responseType: PingPong,
