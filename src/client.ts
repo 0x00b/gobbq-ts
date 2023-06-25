@@ -17,6 +17,7 @@ import { Endpoint, getEndpointName } from './endpoint';
 import { Packet } from './codec/packet';
 import { randomUUID } from 'crypto';
 import { NewGateService } from '../proto/gate.bbq'
+import { PingPong } from '../proto/gate';
 
 /**
  * 初始化时可以指定的选项
@@ -99,6 +100,10 @@ export class Client<CustomOptions extends Options> {
     console.log("gate:", response)
 
     client.EntityID = response.EntityID
+
+    setInterval(()=>{
+      gate.Ping(PingPong.create())
+    },10*1000)
 
     return client
   }
