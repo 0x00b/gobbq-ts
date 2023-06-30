@@ -24,7 +24,9 @@ async function test() {
     protocol: 'kcp',
   } as const;
 
-  let client = await Client.create(ClientEntityDefinition, new EchoImpl(), { remote })
+  let client = await Client.create({ remote })
+  
+  client.register(ClientEntityDefinition, new EchoImpl())
 
   let c = NewEchoSvc2Service(client)
   // let c = NewEchoEtyEntity(client, EntityID.create({ID: "xxxx"}))

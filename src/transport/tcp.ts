@@ -192,7 +192,7 @@ export class TCPTransport extends ClientTransport /*implements Transport*/ {
   }
   
   public send(buffer: Buffer) {
-    console.log('[send]', `connected:${this.connected}`, `promise:${this.promise}`);
+    // console.log('[send]', `connected:${this.connected}`, `promise:${this.promise}`);
 
     if (!this.connected) {
       return false;

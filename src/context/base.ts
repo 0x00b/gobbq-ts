@@ -129,7 +129,7 @@ export abstract class BaseContext<CustomOptions extends Options> {
     this.pending = false;
     this.error = err;
 
-    console.log('[end]', 'timer', this.timer);
+    // console.log('[end]', 'timer', this.timer);
     /* istanbul ignore else */
     if (this.timer !== undefined) {
       clearTimeout(this.timer);

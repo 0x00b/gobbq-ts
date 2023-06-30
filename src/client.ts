@@ -50,12 +50,11 @@ export class Client<CustomOptions extends Options> {
   private deferredUnary = new Map<string, Deferred<Partial<UnaryResult>, RpcError>>();
 
   private constructor(
-    def: ServiceDefinition, impl: any,
     options: Partial<Options> = Object.create(null),
   ) {
     this.EntityID = Long.fromInt(0) //EntityID.create({ ID: randomUUID(), Type: def.typeName })
 
-    this.dispather = new Dispatcher(def, impl)
+    this.dispather = new Dispatcher()
     options.dispatherMiddlewares?.forEach(m => {
       this.dispather.use(m)
     })
@@ -82,11 +81,10 @@ export class Client<CustomOptions extends Options> {
   }
 
   static async create(
-    def: ServiceDefinition, impl: any,
     options: Partial<Options> = Object.create(null)
   ): Promise<Client<any>> {
 
-    let client = new Client(def, impl, options)
+    let client = new Client(options)
 
     let gate = NewGateService(client)
     let { error, response } = await gate.RegisterClient({ EntityID: client.EntityID })
@@ -101,9 +99,9 @@ export class Client<CustomOptions extends Options> {
 
     client.EntityID = response.EntityID
 
-    setInterval(()=>{
+    setInterval(() => {
       gate.Ping(PingPong.create())
-    },10*1000)
+    }, 10 * 1000)
 
     return client
   }
@@ -117,6 +115,10 @@ export class Client<CustomOptions extends Options> {
       // configure: this.configure,
       // options: this.options,
     };
+  }
+
+  public register(def: ServiceDefinition, impl: any) {
+    this.dispather.register(def, impl)
   }
 
   /**

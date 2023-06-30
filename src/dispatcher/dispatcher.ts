@@ -22,7 +22,6 @@ export class Dispatcher<CustomContextT = {}> {
   private readonly handlers = new Map<string, MethodImpl<any, any>>();
 
   public constructor(
-    def: ServiceDefinition, impl: any,
     private options: Options = {},
   ) {
     this.options?.middleware?.forEach(fn => this.use(fn));
@@ -31,6 +30,10 @@ export class Dispatcher<CustomContextT = {}> {
       throw new Error("already init")
     }
 
+    this.inited = true
+  }
+
+  public register(def: ServiceDefinition, impl: any): void {
     const prototype = Object.getPrototypeOf(impl);
     let ma = Reflect.ownKeys(prototype)
 
@@ -53,8 +56,6 @@ export class Dispatcher<CustomContextT = {}> {
       let func = impl[key].bind(impl)
       this.handlers.set(def.typeName + "/" + key, { ...value, handle: func })
     }
-
-    this.inited = true
   }
 
   public use<NewCustomContextT = {}>(fn: Middleware<CustomContextT & NewCustomContextT>): this {
@@ -93,7 +94,7 @@ export class Dispatcher<CustomContextT = {}> {
       return rsp
     }
 
-    const fn = compose.compose([...this.middleware, mh]); 
+    const fn = compose.compose([...this.middleware, mh]);
 
     return this.handleUnaryRequest(fn, createContext(pkt, handler, transport));
 

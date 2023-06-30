@@ -40,7 +40,7 @@ export function createTruncator(handler: PacketHandler): Truncator {
         break;
       }
 
-      console.log("recv:", packetLength, buf.length)
+      // console.log("recv:", packetLength, buf.length)
 
       handler(buf.subarray(0, packetLength + 4));
 
