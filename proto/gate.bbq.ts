@@ -3,9 +3,10 @@
 //  请勿添加其他内容，包括函数，结构体，变量等等，否则重新生成时会丢失。
 
 import { UnaryResponse } from "../src/context/unary";
-import { Client } from "../src";
+import { Client, Context } from "../src";
 import { makeClientConstructor } from "../src/bbq/bbq";
-import { ServiceType } from "../proto/bbq";
+import { ServiceType } from "./bbq";
+import Long from "long";
 import { PingPong } from "./gate"
 import { RegisterClientRequest } from "./gate"
 import { RegisterClientResponse } from "./gate"
@@ -82,6 +83,22 @@ export interface GateService {
 
 	// Ping
 	Ping(request: PingPong):UnaryResponse<PingPong>
+}
+
+export interface GateServiceService {
+
+	// RegisterClient
+	RegisterClient(c: Context, request: RegisterClientRequest):UnaryResponse<RegisterClientResponse>
+
+	// UnregisterClient
+	UnregisterClient(c: Context, request: RegisterClientRequest):void
+
+	// Ping
+	Ping(c: Context, request: PingPong):UnaryResponse<PingPong>
+}
+
+export function RegisterGateServiceService(client: Client<any>, svc: GateServiceService){
+  client.register(GateServiceDefinition, svc)
 }
 
 export function NewGateService(client: Client<any>): GateService {

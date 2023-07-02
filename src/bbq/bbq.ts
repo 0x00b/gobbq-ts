@@ -6,6 +6,7 @@ import { ServiceDefinition } from "../dispatcher/service";
 import { ERROR } from "../error";
 import { Deferred } from "../utils";
 import Long from "long";
+import { CallType } from "../../proto/bbq";
 
 export function makeClientConstructor(
   client: Client<any>,
@@ -44,6 +45,13 @@ export function makeClientConstructor(
       hdr.Method = attrs.methodName
       hdr.RequestType = RequestType.RequestRequest;
 
+      let hasResponse = attrs.responseType != undefined
+
+      hdr.CallType = CallType.Unary
+      if(!hasResponse){
+        hdr.CallType = CallType.OneWay
+      }
+
       hdr.RequestId = randomUUID()
 
       console.log("[sys] req:", JSON.stringify(hdr), JSON.stringify(args))
@@ -52,7 +60,6 @@ export function makeClientConstructor(
 
       let resp = new Deferred<any, ERROR>()
 
-      let hasResponse = attrs.responseType != undefined
 
       const rpc = client.unaryInvoke(hdr, data, { hasResponse })
 
