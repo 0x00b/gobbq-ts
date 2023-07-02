@@ -37,8 +37,9 @@ export function makeClientConstructor(
       if (entityID) {
         hdr.DstEntity = entityID
       }
-
-      hdr.Type = service.typeName
+      if(service.serviceType == ServiceType.Entity){
+        hdr.Type = service.typeName
+      }
       hdr.ServiceType = service.serviceType;
       hdr.Method = attrs.methodName
       hdr.RequestType = RequestType.RequestRequest;
